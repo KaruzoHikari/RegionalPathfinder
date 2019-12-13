@@ -1,5 +1,6 @@
 package com.mattymatty.RegionalPathfinder.core.loader;
 
+import com.mattymatty.RegionalPathfinder.LocationPair;
 import com.mattymatty.RegionalPathfinder.RegionalPathfinder;
 import com.mattymatty.RegionalPathfinder.core.graph.Edge;
 import com.mattymatty.RegionalPathfinder.core.graph.Node;
@@ -9,7 +10,9 @@ import org.jgrapht.Graph;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class LoadData {
@@ -28,6 +31,7 @@ public class LoadData {
     int y_size;
     int z_size;
     public final Map<Integer, Map<Integer, Map<Integer, Location>>> reachableLocationsMap = new HashMap<>();
+    public final Map<Integer, List<LocationPair>> reachableLocations = new HashMap<>();
 
     public LoadData(BaseRegionImpl region, Location upperCorner, Location lowerCorner) {
         this.region = new WeakReference<>(region);
@@ -111,12 +115,6 @@ public class LoadData {
         this.graph = null;
         this.reachableGraph = null;
         this.region.clear();
-        this.reachableLocationsMap.forEach((integer, integerMapMap) -> {
-            integerMapMap.forEach((integer1, integerLocationMap) ->
-                    integerLocationMap.clear()
-            );
-            integerMapMap.clear();
-        });
         this.reachableLocationsMap.clear();
         this.upperCorner = null;
         this.lowerCorner = null;
@@ -125,5 +123,24 @@ public class LoadData {
         this.shortestPath = null;
         this.nodesMap.clear();
         this.nodesMap = null;
+    }
+
+    public List<LocationPair> getLocationPairs() {
+        List<LocationPair> locationPairList = new ArrayList<>();
+        for(List<LocationPair> locList : reachableLocations.values()) {
+            locationPairList.addAll(locList);
+        }
+        return locationPairList;
+    }
+
+    public List<LocationPair> getLocationPairs(int y) {
+        if(reachableLocationsMap.containsKey(y)) {
+            return reachableLocations.get(y);
+        }
+        return new ArrayList<>();
+    }
+
+    public Map<Integer, List<LocationPair>> getLocationPairsMap() {
+        return reachableLocations;
     }
 }

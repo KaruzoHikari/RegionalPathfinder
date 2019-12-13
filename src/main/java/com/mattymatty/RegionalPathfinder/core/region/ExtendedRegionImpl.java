@@ -1,5 +1,6 @@
 package com.mattymatty.RegionalPathfinder.core.region;
 
+import com.mattymatty.RegionalPathfinder.LocationPair;
 import com.mattymatty.RegionalPathfinder.Logger;
 import com.mattymatty.RegionalPathfinder.RegionalPathfinder;
 import com.mattymatty.RegionalPathfinder.api.Status;
@@ -9,7 +10,7 @@ import com.mattymatty.RegionalPathfinder.api.region.Region;
 import com.mattymatty.RegionalPathfinder.core.StatusImpl;
 import com.mattymatty.RegionalPathfinder.core.graph.Edge;
 import com.mattymatty.RegionalPathfinder.core.graph.Node;
-import com.mattymatty.RegionalPathfinder.exeptions.RegionException;
+import com.mattymatty.RegionalPathfinder.exceptions.RegionException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -37,13 +38,15 @@ import java.util.stream.Stream;
 
 public class ExtendedRegionImpl implements ExtendedRegion, RegionImpl {
 
-    public final Map<Integer, Map<Integer, Map<Integer, Location>>> reachableLocationsMap = new HashMap<>();
+    private final Map<Integer, Map<Integer, Map<Integer, Location>>> reachableLocationsMap = new HashMap<>();
     private long min_x = Long.MAX_VALUE;
     private long min_y = Long.MAX_VALUE;
     private long min_z = Long.MAX_VALUE;
     private long max_x = Long.MIN_VALUE;
     private long max_y = Long.MIN_VALUE;
     private long max_z = Long.MIN_VALUE;
+
+    private final Map<Integer, List<LocationPair>> reachableLocations = new HashMap<>();
 
     public static boolean sync = true;
 
@@ -70,8 +73,6 @@ public class ExtendedRegionImpl implements ExtendedRegion, RegionImpl {
     public Status<Region[]> addRegion(Region region) {
         return addRegion(region, 1.0);
     }
-
-    private Set<Location> reachableLocations = new HashSet<>();
 
     @Override
     public Status<Region[]> addRegion(Region region, @Positive double weightMultiplier) {
@@ -198,12 +199,19 @@ public class ExtendedRegionImpl implements ExtendedRegion, RegionImpl {
         regions.put(reg, rw);
         reg.referencer(this);
 
-        reg.getReachableLocations().forEach(this::computeLocations);
+        reg.getAllLocationsCANTSTORE().forEach(this::computeLocations);
+        computeLocationPair(reg.getLocationPairsMap());
 
-        reachableLocations.addAll(reg.getReachableLocations());
         status.setProduct(regions.keySet().toArray(new Region[]{}));
         status.totTime = (System.currentTimeMillis() - tic);
         status.setStatus(3);
+    }
+
+    private void computeLocationPair(Map<Integer, List<LocationPair>> locationPairMap) {
+        for(Integer integer : locationPairMap.keySet()) {
+            List<LocationPair> myPairs = reachableLocations.computeIfAbsent(integer, k -> new ArrayList<>());
+            myPairs.addAll(locationPairMap.get(integer));
+        }
     }
 
     private void makeEdges(RegionImpl region, RegionWrapper rw, Node n) {
@@ -408,6 +416,28 @@ public class ExtendedRegionImpl implements ExtendedRegion, RegionImpl {
         throw new RuntimeException("Not Yet implemented");
     }
 
+    @Override
+    public List<LocationPair> getLocationPairs() {
+        List<LocationPair> locationPairList = new ArrayList<>();
+        for(List<LocationPair> locList : reachableLocations.values()) {
+            locationPairList.addAll(locList);
+        }
+        return locationPairList;
+    }
+
+    @Override
+    public List<LocationPair> getLocationPairs(int y) {
+        if(reachableLocations.containsKey(y)) {
+            return reachableLocations.get(y);
+        }
+        return new ArrayList<>();
+    }
+
+    @Override
+    public Map<Integer, List<LocationPair>> getLocationPairsMap() {
+        return reachableLocations;
+    }
+
     private Region getRegion(Location l) {
         return regions.keySet().stream().filter((r) -> r.isReachableLocation(l)).findFirst().orElse(null);
     }
@@ -441,7 +471,6 @@ public class ExtendedRegionImpl implements ExtendedRegion, RegionImpl {
         status.setProduct(regions.keySet().toArray(new Region[]{}));
         status.totTime = (System.currentTimeMillis() - tic);
         reachableLocations.clear();
-        getReachableLocations();
         reachableLocationsMap.clear();
         min_x = Long.MAX_VALUE;
         min_y = Long.MAX_VALUE;
@@ -449,23 +478,25 @@ public class ExtendedRegionImpl implements ExtendedRegion, RegionImpl {
         max_x = Long.MIN_VALUE;
         max_y = Long.MIN_VALUE;
         max_z = Long.MIN_VALUE;
-        reachableLocations.forEach(this::computeLocations);
+        for(Region region : regions.keySet()) {
+            region.getAllLocationsCANTSTORE().forEach(this::computeLocations);
+        }
         status.setStatus(3);
     }
 
-    @Override
+    /*@Override
     public Set<Location> getReachableLocations() {
         if (reachableLocations.isEmpty())
             reachableLocations = regions.keySet().stream().flatMap(r -> r.getReachableLocations().stream()).collect(Collectors.toSet());
         return new HashSet<>(reachableLocations);
-    }
+    }*/
 
     @Override
     public int getLevel() {
         return regions.keySet().stream().mapToInt(Region::getLevel).max().orElse(-1) + 1;
     }
 
-    @Override
+    /*@Override
     public Set<Location> getReachableLocations(Location center, int range) {
         if (reachableLocationsMap.isEmpty())
             return null;
@@ -511,7 +542,7 @@ public class ExtendedRegionImpl implements ExtendedRegion, RegionImpl {
             );
         }
         return result;
-    }
+    }*/
 
     @Override
     public boolean isInRegion(Location location) {
@@ -525,13 +556,14 @@ public class ExtendedRegionImpl implements ExtendedRegion, RegionImpl {
 
     @Override
     public boolean isReachableLocation(Location location) {
-        Map<Integer, Map<Integer, Location>> Z_map = reachableLocationsMap.get(location.getBlockY());
-        if (Z_map == null)
-            return false;
-        Map<Integer, Location> X_map = Z_map.get(location.getBlockZ());
-        if (X_map == null)
-            return false;
-        return X_map.containsKey(location.getBlockX());
+        if(reachableLocations.containsKey(location.getBlockY())) {
+            for(LocationPair locationPair : reachableLocations.get(location.getBlockY())) {
+                if(locationPair.containsLocation(location)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
@@ -791,6 +823,15 @@ public class ExtendedRegionImpl implements ExtendedRegion, RegionImpl {
         return status;
     }
 
+    @Override
+    public Set<Location> getAllLocationsCANTSTORE() {
+        Set<Location> locationList = new HashSet<>();
+        for(LocationPair locationPair : getLocationPairs()) {
+            locationList.addAll(locationPair.getAllLocations());
+        }
+        return locationList;
+    }
+
     private void removeEdges(RegionWrapper rw, Node n) {
         rw.waypoints.remove(n);
         rw.waypoints.forEach((w) -> {
@@ -819,21 +860,32 @@ public class ExtendedRegionImpl implements ExtendedRegion, RegionImpl {
     }
 
     private void computeLocations(Location l) {
-        if (l.getBlockY() < min_y)
-            min_y = l.getBlockY();
-        if (l.getBlockZ() < min_z)
-            min_z = l.getBlockZ();
-        if (l.getBlockX() < min_x)
-            min_x = l.getBlockX();
-        if (l.getBlockY() > max_y)
-            max_y = l.getBlockY();
-        if (l.getBlockZ() > max_z)
-            max_z = l.getBlockZ();
-        if (l.getBlockX() > max_x)
-            max_x = l.getBlockX();
+        if (l.getBlockY() < min_y) { min_y = l.getBlockY(); }
+        if (l.getBlockZ() < min_z) { min_z = l.getBlockZ(); }
+        if (l.getBlockX() < min_x) { min_x = l.getBlockX(); }
+        if (l.getBlockY() > max_y) { max_y = l.getBlockY(); }
+        if (l.getBlockZ() > max_z) { max_z = l.getBlockZ(); }
+        if (l.getBlockX() > max_x) { max_x = l.getBlockX(); }
+
         Map<Integer, Map<Integer, Location>> z_map = reachableLocationsMap.computeIfAbsent(l.getBlockY(), k -> new HashMap<>());
         Map<Integer, Location> x_set = z_map.computeIfAbsent(l.getBlockZ(), k -> new HashMap<>());
         x_set.put(l.getBlockX(), l);
+    }
+
+    private LocationPair getLocationPair(Location loc, List<Location> locList, Set<Location> ogLocationList) {
+        Location maxCorner = getCornerOfPair(loc,true,ogLocationList);
+        Location minCorner = getCornerOfPair(loc,false,ogLocationList);
+        LocationPair locationPair = new LocationPair(minCorner,maxCorner);
+        for(Location location : new ArrayList<>(locList)) {
+            if(location.getBlockY() == minCorner.getBlockY()) {
+                if(location.getBlockX() >= minCorner.getBlockX() && location.getBlockX() <= maxCorner.getBlockX()) {
+                    if(location.getBlockZ() >= minCorner.getBlockZ() && location.getBlockZ() <= maxCorner.getBlockZ()) {
+                        locList.remove(location);
+                    }
+                }
+            }
+        }
+        return locationPair;
     }
 
     private static class RegionWrapper {

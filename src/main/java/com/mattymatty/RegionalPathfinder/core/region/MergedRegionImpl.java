@@ -2,6 +2,7 @@ package com.mattymatty.RegionalPathfinder.core.region;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.mattymatty.RegionalPathfinder.LocationPair;
 import com.mattymatty.RegionalPathfinder.Logger;
 import com.mattymatty.RegionalPathfinder.RegionalPathfinder;
 import com.mattymatty.RegionalPathfinder.api.Status;
@@ -31,11 +32,185 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class MergedRegionImpl implements ExtendedRegion, RegionImpl {
+    @Override
+    public Status<Region[]> addRegion(Region region, @Positive double weightMultiplier, Set<Location> excludedWayPoints) {
+        return null;
+    }
 
+    @Override
+    public Status<Region[]> addRegion(Region region, @Positive double weightMultiplier) {
+        return null;
+    }
+
+    @Override
+    public Status<Region[]> addRegion(Region region, Set<Location> excludedWayPoints) {
+        return null;
+    }
+
+    @Override
+    public Status<Region[]> addRegion(Region region) {
+        return null;
+    }
+
+    @Override
+    public Status<Region[]> removeRegion(Region region) {
+        return null;
+    }
+
+    @Override
+    public List<Location> getIntersections() {
+        return null;
+    }
+
+    @Override
+    public List<Region> getUnconnectedRegions() {
+        return null;
+    }
+
+    @Override
+    public void fromJson(JSONObject json) {
+
+    }
+
+    @Override
+    public void toJson(File baseCache, File extendedCache) throws IOException {
+
+    }
+
+    @Override
+    public Path _getPath(Location start, Location end) {
+        return null;
+    }
+
+    @Override
+    public void delete() {
+
+    }
+
+    @Override
+    public void invalidate() {
+
+    }
+
+    @Override
+    public void referencer(RegionImpl region) {
+
+    }
+
+    @Override
+    public int getID() {
+        return 0;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public int getLevel() {
+        return 0;
+    }
+
+    @Override
+    public World getWorld() {
+        return null;
+    }
+
+    @Override
+    public Location[] getCorners() {
+        return new Location[0];
+    }
+
+    @Override
+    public Location getMinCorner() {
+        return null;
+    }
+
+    @Override
+    public Location getMaxCorner() {
+        return null;
+    }
+
+    @Override
+    public Set<Location> getValidLocations() {
+        return null;
+    }
+
+    @Override
+    public Set<Location> getValidLocations(Location center, int range) {
+        return null;
+    }
+
+    @Override
+    public List<LocationPair> getLocationPairs() {
+        return null;
+    }
+
+    @Override
+    public List<LocationPair> getLocationPairs(int y) {
+        return null;
+    }
+
+    @Override
+    public Map<Integer, List<LocationPair>> getLocationPairsMap() {
+        return null;
+    }
+
+    @Override
+    public boolean isInRegion(Location location) {
+        return false;
+    }
+
+    @Override
+    public boolean isValidLocation(Location location) {
+        return false;
+    }
+
+    @Override
+    public boolean isReachableLocation(Location location) {
+        return false;
+    }
+
+    @Override
+    public Entity setEntity(Entity entity) {
+        return null;
+    }
+
+    @Override
+    public Entity getEntity() {
+        return null;
+    }
+
+    @Override
+    public boolean isValid() {
+        return false;
+    }
+
+    @Override
+    public Status<Boolean> validate() {
+        return null;
+    }
+
+    @Override
+    public Status<Path> getPath(Location start, Location end) {
+        return null;
+    }
+
+    @Override
+    public Set<Location> getAllLocationsCANTSTORE() {
+        return null;
+    }
 
     private final int id;
-
     private final String name;
+
+    public MergedRegionImpl(String name) {
+        this.name = name;
+        this.id = RegionImpl.nextID.getAndIncrement();
+    }
+
+    /*
 
     private Graph<Node, Edge> graph = GraphTypeBuilder.<Node, Edge>directed().weighted(true).edgeClass(Edge.class).allowingSelfLoops(true).buildGraph();
 
@@ -50,10 +225,7 @@ public class MergedRegionImpl implements ExtendedRegion, RegionImpl {
     private Cache<Node, ShortestPathAlgorithm.SingleSourcePaths<Node, Edge>> sourceCache = CacheBuilder.newBuilder().softValues()
             .maximumSize(15).build();
 
-    public MergedRegionImpl(String name) {
-        this.name = name;
-        this.id = RegionImpl.nextID.getAndIncrement();
-    }
+
 
     @Override
     public Status<Region[]> addRegion(Region region, @Positive double weightMultiplier, Set<Location> excludedWayPoints) {
@@ -171,6 +343,21 @@ public class MergedRegionImpl implements ExtendedRegion, RegionImpl {
     @Override
     public Set<Location> getValidLocations(Location center, int range) {
         return regions.stream().flatMap(region -> region.getValidLocations(center, range).stream()).collect(Collectors.toSet());
+    }
+
+    @Override
+    public List<LocationPair> getLocationPairs() {
+        return null;
+    }
+
+    @Override
+    public List<LocationPair> getLocationPairs(int y) {
+        return null;
+    }
+
+    @Override
+    public Map<Integer, List<LocationPair>> getLocationPairsMap() {
+        return null;
     }
 
     @Override
@@ -293,6 +480,11 @@ public class MergedRegionImpl implements ExtendedRegion, RegionImpl {
         return status;
     }
 
+    @Override
+    public Set<Location> getAllLocationsCANTSTORE() {
+        return null;
+    }
+
     private GraphPath<Node, Edge> getNodeEdgeGraphPath(Node sNode, Node eNode) {
         GraphPath<Node, Edge> path;
         ShortestPathAlgorithm.SingleSourcePaths<Node, Edge> iPaths;
@@ -351,5 +543,5 @@ public class MergedRegionImpl implements ExtendedRegion, RegionImpl {
     @Override
     public ExtendedRegion asExtendedRegion() {
         return this;
-    }
+    }*/
 }

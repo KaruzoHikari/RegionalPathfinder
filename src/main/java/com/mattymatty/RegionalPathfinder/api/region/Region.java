@@ -1,5 +1,6 @@
 package com.mattymatty.RegionalPathfinder.api.region;
 
+import com.mattymatty.RegionalPathfinder.LocationPair;
 import com.mattymatty.RegionalPathfinder.RegionalPathfinder;
 import com.mattymatty.RegionalPathfinder.api.Status;
 import com.mattymatty.RegionalPathfinder.api.entity.Entity;
@@ -9,6 +10,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /*
@@ -44,18 +46,15 @@ public interface Region {
      **/
     Set<Location> getValidLocations(Location center, int range);
 
-    //a getter for all the locations where the entity can walk to
-    Set<Location> getReachableLocations();
-
     //a getter for all the locations where the entity can stand near a point
 
     /**
      * //  NOT YET IMPLEMENTED
      **/
-    Set<Location> getReachableLocations(Location center, int range);
 
-    Set<Location> getReachableLocations(Location center, int x_range, int y_range, int z_range);
-
+    List<LocationPair> getLocationPairs();
+    List<LocationPair> getLocationPairs(int y);
+    Map<Integer, List<LocationPair>> getLocationPairsMap();
 
     //a check for intersection locations
     default Status<Set<Location>> getIntersection(Region region) {
@@ -100,6 +99,7 @@ public interface Region {
     //pathfind command for the current region
     Status<Path> getPath(Location start, Location end);
 
+    Set<Location> getAllLocationsCANTSTORE();
 
     default BaseRegion asBaseRegion(){
         return (this instanceof BaseRegion)?(BaseRegion)this:null;

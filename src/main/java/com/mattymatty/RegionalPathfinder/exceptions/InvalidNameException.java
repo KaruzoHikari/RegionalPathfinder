@@ -1,4 +1,4 @@
-package com.mattymatty.RegionalPathfinder.exeptions;
+package com.mattymatty.RegionalPathfinder.exceptions;
 
 public class InvalidNameException extends RuntimeException {
     public InvalidNameException() {

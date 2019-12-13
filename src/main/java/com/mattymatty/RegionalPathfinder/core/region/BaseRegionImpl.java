@@ -2,6 +2,7 @@ package com.mattymatty.RegionalPathfinder.core.region;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.mattymatty.RegionalPathfinder.LocationPair;
 import com.mattymatty.RegionalPathfinder.Logger;
 import com.mattymatty.RegionalPathfinder.RegionalPathfinder;
 import com.mattymatty.RegionalPathfinder.api.Status;
@@ -14,7 +15,7 @@ import com.mattymatty.RegionalPathfinder.core.graph.Node;
 import com.mattymatty.RegionalPathfinder.core.loader.LoadData;
 import com.mattymatty.RegionalPathfinder.core.loader.Loader;
 import com.mattymatty.RegionalPathfinder.core.loader.SynchronousLoader;
-import com.mattymatty.RegionalPathfinder.exeptions.RegionException;
+import com.mattymatty.RegionalPathfinder.exceptions.RegionException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -70,20 +71,24 @@ public class BaseRegionImpl implements RegionImpl, BaseRegion {
 
     @Override
     public World getWorld() {
-
         World world = (loadData == null) ? null : loadData.lowerCorner.getWorld();
-
         return world;
     }
 
     private Location lowerCorner;
 
     @Override
+    public Set<Location> getAllLocationsCANTSTORE() {
+        Set<Location> locationList = new HashSet<>();
+        for(LocationPair locationPair : getLocationPairs()) {
+            locationList.addAll(locationPair.getAllLocations());
+        }
+        return locationList;
+    }
+
+    @Override
     public Set<Location> getValidLocations() {
-
-
         Set<Location> ret = (loadData == null) ? null : new HashSet<>(loader.getValid(loadData));
-
         return ret;
     }
 
@@ -92,6 +97,22 @@ public class BaseRegionImpl implements RegionImpl, BaseRegion {
         throw new RuntimeException("Not Yet implemented");
     }
 
+    @Override
+    public List<LocationPair> getLocationPairs() {
+        return loadData.getLocationPairs();
+    }
+
+    @Override
+    public List<LocationPair> getLocationPairs(int y) {
+        return loadData.getLocationPairs(y);
+    }
+
+    @Override
+    public Map<Integer, List<LocationPair>> getLocationPairsMap() {
+        return loadData.getLocationPairsMap();
+    }
+
+    /*
     @Override
     public Set<Location> getReachableLocations() {
 
@@ -151,7 +172,7 @@ public class BaseRegionImpl implements RegionImpl, BaseRegion {
             );
         }
         return result;
-    }
+    }*/
 
     private Location upperCorner;
     private Location samplepoint;
@@ -276,27 +297,14 @@ public class BaseRegionImpl implements RegionImpl, BaseRegion {
 
     @Override
     public boolean isReachableLocation(Location location) {
-
-
-        boolean ret = false;
-        if (loadData == null)
-            ret = false;
-        else if (loadData.getStatus().getValue() < LoadData.Status.EVALUATED.getValue())
-            ret = false;
-        else {
-            Map<Integer, Map<Integer, Location>> Z_map = loadData.reachableLocationsMap.get(location.getBlockY());
-            if (Z_map == null)
-                ret = false;
-            else {
-                Map<Integer, Location> X_map = Z_map.get(location.getBlockZ());
-                if (X_map == null)
-                    ret = false;
-                else
-                    ret = X_map.containsKey(location.getBlockX());
+        if(loadData.reachableLocationsMap.containsKey(location.getBlockY())) {
+            for(LocationPair locationPair : loadData.reachableLocations.get(location.getBlockY())) {
+                if(locationPair.containsLocation(location)) {
+                    return true;
+                }
             }
         }
-
-        return ret;
+        return false;
     }
 
     @Override

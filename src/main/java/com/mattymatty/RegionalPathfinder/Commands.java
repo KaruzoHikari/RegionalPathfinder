@@ -147,7 +147,7 @@ public class Commands implements CommandExecutor {
                                     });
                                     return true;
                                 }
-                                case "validloc":
+                                /*case "validloc":
                                 case "validlocations": {
                                     Set<Location> locations = region.getValidLocations();
                                     if (locations.isEmpty()) {
@@ -157,10 +157,10 @@ public class Commands implements CommandExecutor {
                                         sender.sendMessage("Shown particles onto valid Locations, remove with /regionalpathfinder particle");
                                     }
                                     return true;
-                                }
+                                }*/
                                 case "reachableloc":
                                 case "reachablelocations": {
-                                    Set<Location> locations = region.getReachableLocations();
+                                    Set<Location> locations = region.getAllLocationsCANTSTORE();
                                     if (locations.isEmpty()) {
                                         sender.sendMessage("Error no reachable locations");
                                     } else {
@@ -232,7 +232,7 @@ public class Commands implements CommandExecutor {
                                 }
                                 case "reachableloc":
                                 case "reachablelocations": {
-                                    Set<Location> locations = region.getReachableLocations();
+                                    Set<Location> locations = region.getAllLocationsCANTSTORE();
                                     if (locations.isEmpty()) {
                                         sender.sendMessage("Error no reachable locations");
                                     } else {

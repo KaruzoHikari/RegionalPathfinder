@@ -872,22 +872,6 @@ public class ExtendedRegionImpl implements ExtendedRegion, RegionImpl {
         x_set.put(l.getBlockX(), l);
     }
 
-    private LocationPair getLocationPair(Location loc, List<Location> locList, Set<Location> ogLocationList) {
-        Location maxCorner = getCornerOfPair(loc,true,ogLocationList);
-        Location minCorner = getCornerOfPair(loc,false,ogLocationList);
-        LocationPair locationPair = new LocationPair(minCorner,maxCorner);
-        for(Location location : new ArrayList<>(locList)) {
-            if(location.getBlockY() == minCorner.getBlockY()) {
-                if(location.getBlockX() >= minCorner.getBlockX() && location.getBlockX() <= maxCorner.getBlockX()) {
-                    if(location.getBlockZ() >= minCorner.getBlockZ() && location.getBlockZ() <= maxCorner.getBlockZ()) {
-                        locList.remove(location);
-                    }
-                }
-            }
-        }
-        return locationPair;
-    }
-
     private static class RegionWrapper {
         Region region;
         double multiplier;

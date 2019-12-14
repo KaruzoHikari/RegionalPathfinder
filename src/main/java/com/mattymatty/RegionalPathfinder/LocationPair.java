@@ -1,9 +1,11 @@
 package com.mattymatty.RegionalPathfinder;
 
 import org.bukkit.Location;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class LocationPair {
 
@@ -40,5 +42,51 @@ public class LocationPair {
             }
         }
         return locationList;
+    }
+
+    public static LocationPair getLocationPair(Location loc, List<Location> locList, Set<Location> ogLocationList) {
+        Location maxCorner = getCornerOfPair(loc,true,ogLocationList);
+        Location minCorner = getCornerOfPair(loc,false,ogLocationList);
+        LocationPair locationPair = new LocationPair(minCorner,maxCorner);
+        for(Location location : new ArrayList<>(locList)) {
+            if(location.getBlockY() == minCorner.getBlockY()) {
+                if(location.getBlockX() >= minCorner.getBlockX() && location.getBlockX() <= maxCorner.getBlockX()) {
+                    if(location.getBlockZ() >= minCorner.getBlockZ() && location.getBlockZ() <= maxCorner.getBlockZ()) {
+                        locList.remove(location);
+                    }
+                }
+            }
+        }
+        return locationPair;
+    }
+
+    public static Location getCornerOfPair(Location loc, boolean positive, Set<Location> ogLocationList) {
+        Location corner = null;
+        Location currentLoc = loc.clone();
+        boolean keepX = true;
+        Vector xVector = new Vector(1,0,0);
+        Vector zVector = new Vector(0,0,1);
+        if(!positive) {
+            xVector.multiply(-1);
+            zVector.multiply(-1);
+        }
+        while(corner == null) {
+            if(keepX) {
+                Location newLoc = currentLoc.clone().add(xVector);
+                if (ogLocationList.contains(newLoc)) {
+                    currentLoc = newLoc;
+                } else {
+                    keepX = false;
+                }
+            } else {
+                Location newLoc = currentLoc.clone().add(zVector);
+                if (ogLocationList.contains(newLoc)) {
+                    currentLoc = newLoc;
+                } else {
+                    corner = currentLoc;
+                }
+            }
+        }
+        return corner;
     }
 }

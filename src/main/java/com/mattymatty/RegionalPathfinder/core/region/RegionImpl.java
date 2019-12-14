@@ -118,37 +118,6 @@ public interface RegionImpl extends Region {
         return common;
     }
 
-
-    default Location getCornerOfPair(Location loc, boolean positive, Set<Location> ogLocationList) {
-        Location corner = null;
-        Location currentLoc = loc.clone();
-        boolean keepX = true;
-        Vector xVector = new Vector(1,0,0);
-        Vector zVector = new Vector(0,0,1);
-        if(!positive) {
-            xVector.multiply(-1);
-            zVector.multiply(-1);
-        }
-        while(corner == null) {
-            if(keepX) {
-                Location newLoc = currentLoc.clone().add(xVector);
-                if (ogLocationList.contains(newLoc)) {
-                    currentLoc = newLoc;
-                } else {
-                    keepX = false;
-                }
-            } else {
-                Location newLoc = currentLoc.clone().add(zVector);
-                if (ogLocationList.contains(newLoc)) {
-                    currentLoc = newLoc;
-                } else {
-                    corner = currentLoc;
-                }
-            }
-        }
-        return corner;
-    }
-
     default Location getCornerOfPair(Location loc, boolean positive, LocationPair checkPair) {
         Location corner = null;
         Location currentLoc = loc.clone();

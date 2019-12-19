@@ -5,8 +5,8 @@ import com.mattymatty.RegionalPathfinder.RegionalPathfinder;
 import com.mattymatty.RegionalPathfinder.core.StatusImpl;
 import com.mattymatty.RegionalPathfinder.core.graph.Edge;
 import com.mattymatty.RegionalPathfinder.core.graph.Node;
-import com.mattymatty.RegionalPathfinder.exeptions.LoaderException;
-import com.mattymatty.RegionalPathfinder.exeptions.RegionException;
+import com.mattymatty.RegionalPathfinder.exceptions.LoaderException;
+import com.mattymatty.RegionalPathfinder.exceptions.RegionException;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 import org.jgrapht.Graph;
@@ -237,11 +237,11 @@ public class SynchronousLoader implements Loader {
         }
 
         data.nodesMap.clear();
-        data.graph = GraphTypeBuilder.<Node, Edge>directed().edgeClass(Edge.class).weighted(true).buildGraph();
+        data.graph = GraphTypeBuilder.<Node, Edge>directed().edgeClass(Edge.class).weighted(true).allowingSelfLoops(true).buildGraph();
     }
 
     private void preEvaluate(LoadData data) {
-        Graph<Node, Edge> newGraph = GraphTypeBuilder.<Node, Edge>directed().edgeClass(Edge.class).weighted(true).buildGraph();
+        Graph<Node, Edge> newGraph = GraphTypeBuilder.<Node, Edge>directed().edgeClass(Edge.class).weighted(true).allowingSelfLoops(true).buildGraph();
         data.graph.vertexSet().forEach(newGraph::addVertex);
         data.graph = newGraph;
         data.reachableGraph = null;

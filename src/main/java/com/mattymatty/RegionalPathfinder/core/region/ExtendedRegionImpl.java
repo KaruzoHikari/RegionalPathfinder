@@ -9,7 +9,7 @@ import com.mattymatty.RegionalPathfinder.api.region.Region;
 import com.mattymatty.RegionalPathfinder.core.StatusImpl;
 import com.mattymatty.RegionalPathfinder.core.graph.Edge;
 import com.mattymatty.RegionalPathfinder.core.graph.Node;
-import com.mattymatty.RegionalPathfinder.exeptions.RegionException;
+import com.mattymatty.RegionalPathfinder.exceptions.RegionException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -164,11 +164,11 @@ public class ExtendedRegionImpl implements ExtendedRegion, RegionImpl {
         this._getIntersection(reg)
                 .forEach(
                         (l) -> regions.keySet().stream().filter((r) -> r.isReachableLocation(l.clone())).forEach(
-                        (r) -> {
-                            intersectionMap.computeIfAbsent(r, (k) -> new HashSet<>()).add(l.clone());
-                        }
-                )
-        );
+                                (r) -> {
+                                    intersectionMap.computeIfAbsent(r, (k) -> new HashSet<>()).add(l.clone());
+                                }
+                        )
+                );
 
         invalidate();
 
@@ -198,9 +198,11 @@ public class ExtendedRegionImpl implements ExtendedRegion, RegionImpl {
         regions.put(reg, rw);
         reg.referencer(this);
 
-        reg.getReachableLocations().forEach(this::computeLocations);
+        // TODO THIS COMPUTES THE LOCATIONS TO THE MAP (REIMPLEMENT GETREACHABLELOCATIONS)
+        //reg.getReachableLocations().forEach(this::computeLocations);
 
-        reachableLocations.addAll(reg.getReachableLocations());
+        // TODO THIS ADDS THE REACHABLE TO THE REACHABLELOCATIONS LIST -> CHANGE TO THE LOCATIONPAIRS SYSTEM
+        //reachableLocations.addAll(reg.getReachableLocations());
         status.setProduct(regions.keySet().toArray(new Region[]{}));
         status.totTime = (System.currentTimeMillis() - tic);
         status.setStatus(3);
@@ -215,28 +217,28 @@ public class ExtendedRegionImpl implements ExtendedRegion, RegionImpl {
             graph.addVertex(n);
         }
         rw.waypoints.stream().filter(w -> !w.equals(n)).forEach(w -> {
-                Path go = null, ret = null;
-                if (direction == 0 || direction == 1)
-                    go = region._getPath(n.getLoc().clone(), w.getLoc().clone());
-                if (direction == 0 || direction == 2)
-                    ret = region._getPath(w.getLoc().clone(), n.getLoc().clone());
+            Path go = null, ret = null;
+            if (direction == 0 || direction == 1)
+                go = region._getPath(n.getLoc().clone(), w.getLoc().clone());
+            if (direction == 0 || direction == 2)
+                ret = region._getPath(w.getLoc().clone(), n.getLoc().clone());
 
-                if (direction == 0 || direction == 1) {
-                    Edge goE = graph.addEdge(n, w);
-                    if (goE == null)
-                        goE = graph.getEdge(n, w);
-                    goE.setPath(go.getPath());
-                    graph.setEdgeWeight(goE, go.getWeight() * rw.multiplier);
-                }
+            if (direction == 0 || direction == 1) {
+                Edge goE = graph.addEdge(n, w);
+                if (goE == null)
+                    goE = graph.getEdge(n, w);
+                goE.setPath(go.getPath());
+                graph.setEdgeWeight(goE, go.getWeight() * rw.multiplier);
+            }
 
-                if (direction == 0 || direction == 2) {
-                    Edge retE = graph.addEdge(w, n);
-                    if (retE == null)
-                        retE = graph.getEdge(w, n);
-                    retE.setPath(ret.getPath());
-                    graph.setEdgeWeight(retE, ret.getWeight() * rw.multiplier);
-                }
-            });
+            if (direction == 0 || direction == 2) {
+                Edge retE = graph.addEdge(w, n);
+                if (retE == null)
+                    retE = graph.getEdge(w, n);
+                retE.setPath(ret.getPath());
+                graph.setEdgeWeight(retE, ret.getWeight() * rw.multiplier);
+            }
+        });
     }
 
     @Override
@@ -403,10 +405,10 @@ public class ExtendedRegionImpl implements ExtendedRegion, RegionImpl {
         return regions.keySet().stream().flatMap(r -> r.getValidLocations().stream()).distinct().collect(Collectors.toSet());
     }
 
-    @Override
+    /*@Override
     public Set<Location> getValidLocations(Location center, int range) {
         throw new RuntimeException("Not Yet implemented");
-    }
+    }*/
 
     private Region getRegion(Location l) {
         return regions.keySet().stream().filter((r) -> r.isReachableLocation(l)).findFirst().orElse(null);
@@ -441,7 +443,8 @@ public class ExtendedRegionImpl implements ExtendedRegion, RegionImpl {
         status.setProduct(regions.keySet().toArray(new Region[]{}));
         status.totTime = (System.currentTimeMillis() - tic);
         reachableLocations.clear();
-        getReachableLocations();
+        // TODO THIS ASSIGNS THE REACHABLE LOCATIONS TO THE VARIABLE REACHABLELOCATIONS
+        //getReachableLocations();
         reachableLocationsMap.clear();
         min_x = Long.MAX_VALUE;
         min_y = Long.MAX_VALUE;
@@ -453,19 +456,19 @@ public class ExtendedRegionImpl implements ExtendedRegion, RegionImpl {
         status.setStatus(3);
     }
 
-    @Override
+    /*@Override
     public Set<Location> getReachableLocations() {
         if (reachableLocations.isEmpty())
             reachableLocations = regions.keySet().stream().flatMap(r -> r.getReachableLocations().stream()).collect(Collectors.toSet());
         return new HashSet<>(reachableLocations);
-    }
+    }*/
 
     @Override
     public int getLevel() {
         return regions.keySet().stream().mapToInt(Region::getLevel).max().orElse(-1) + 1;
     }
 
-    @Override
+    /*@Override
     public Set<Location> getReachableLocations(Location center, int range) {
         if (reachableLocationsMap.isEmpty())
             return null;
@@ -511,7 +514,7 @@ public class ExtendedRegionImpl implements ExtendedRegion, RegionImpl {
             );
         }
         return result;
-    }
+    }*/
 
     @Override
     public boolean isInRegion(Location location) {

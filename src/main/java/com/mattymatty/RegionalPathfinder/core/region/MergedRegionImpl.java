@@ -28,12 +28,160 @@ import javax.validation.constraints.Positive;
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 public class MergedRegionImpl implements ExtendedRegion, RegionImpl {
 
+    public MergedRegionImpl(String name) {}
 
-    private final int id;
+    @Override
+    public Status<Region[]> addRegion(Region region, @Positive double weightMultiplier, Set<Location> excludedWayPoints) {
+        return null;
+    }
+
+    @Override
+    public Status<Region[]> addRegion(Region region, @Positive double weightMultiplier) {
+        return null;
+    }
+
+    @Override
+    public Status<Region[]> addRegion(Region region, Set<Location> excludedWayPoints) {
+        return null;
+    }
+
+    @Override
+    public Status<Region[]> addRegion(Region region) {
+        return null;
+    }
+
+    @Override
+    public Status<Region[]> removeRegion(Region region) {
+        return null;
+    }
+
+    @Override
+    public List<Location> getIntersections() {
+        return null;
+    }
+
+    @Override
+    public List<Region> getUnconnectedRegions() {
+        return null;
+    }
+
+    @Override
+    public void fromJson(JSONObject json) {
+
+    }
+
+    @Override
+    public void toJson(File baseCache, File extendedCache) throws IOException {
+
+    }
+
+    @Override
+    public Path _getPath(Location start, Location end) {
+        return null;
+    }
+
+    @Override
+    public void delete() {
+
+    }
+
+    @Override
+    public void invalidate() {
+
+    }
+
+    @Override
+    public void referencer(RegionImpl region) {
+
+    }
+
+    @Override
+    public int getID() {
+        return 0;
+    }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public int getLevel() {
+        return 0;
+    }
+
+    @Override
+    public World getWorld() {
+        return null;
+    }
+
+    @Override
+    public Location[] getCorners() {
+        return new Location[0];
+    }
+
+    @Override
+    public Location getMinCorner() {
+        return null;
+    }
+
+    @Override
+    public Location getMaxCorner() {
+        return null;
+    }
+
+    @Override
+    public Set<Location> getValidLocations() {
+        return null;
+    }
+
+    @Override
+    public boolean isInRegion(Location location) {
+        return false;
+    }
+
+    @Override
+    public boolean isValidLocation(Location location) {
+        return false;
+    }
+
+    @Override
+    public boolean isReachableLocation(Location location) {
+        return false;
+    }
+
+    @Override
+    public Entity setEntity(Entity entity) {
+        return null;
+    }
+
+    @Override
+    public Entity getEntity() {
+        return null;
+    }
+
+    @Override
+    public boolean isValid() {
+        return false;
+    }
+
+    @Override
+    public Status<Boolean> validate() {
+        return null;
+    }
+
+    @Override
+    public Status<Path> getPath(Location start, Location end) {
+        return null;
+    }
+
+
+    /*private final int id;
 
     private final String name;
 
@@ -165,7 +313,7 @@ public class MergedRegionImpl implements ExtendedRegion, RegionImpl {
 
     @Override
     public Set<Location> getValidLocations() {
-        return graph.vertexSet().stream().map(Node::getLoc).collect(Collectors.toSet());
+        return regions.stream().flatMap(region -> region.getValidLocations().stream()).collect(Collectors.toSet());
     }
 
     @Override
@@ -179,10 +327,12 @@ public class MergedRegionImpl implements ExtendedRegion, RegionImpl {
             return new HashSet<>(reachable);
         changed = false;
         StrongConnectivityAlgorithm<Node, Edge> sca = new KosarajuStrongConnectivityInspector<>(graph);
-        if (!regions.isEmpty()) {
-            sca.getStronglyConnectedComponents().stream().max(Comparator.comparingInt(o -> o.vertexSet().size())).ifPresent(
-                    nodeEdgeGraph -> reachable = nodeEdgeGraph.vertexSet().stream().map(Node::getLoc).collect(Collectors.toSet())
-            );
+        AtomicReference<Node> to_reach = new AtomicReference<>(null);
+        regions.stream().findFirst().ifPresent(region -> to_reach.set(((BaseRegionImpl) region).loadData.getNode(((BaseRegionImpl) region).loadData.samplePoint)));
+        if (to_reach.get() != null) {
+            reachable = new HashSet<>();
+            Optional<Graph<Node, Edge>> opt = sca.getStronglyConnectedComponents().stream().filter(nodeEdgeGraph -> nodeEdgeGraph.containsVertex(to_reach.get())).findAny();
+            opt.ifPresent(nodeEdgeGraph -> reachable = nodeEdgeGraph.vertexSet().stream().map(Node::getLoc).collect(Collectors.toSet()));
         }
         return new HashSet<>(reachable);
     }
@@ -351,5 +501,5 @@ public class MergedRegionImpl implements ExtendedRegion, RegionImpl {
     @Override
     public ExtendedRegion asExtendedRegion() {
         return this;
-    }
+    }*/
 }

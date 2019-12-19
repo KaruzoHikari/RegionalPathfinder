@@ -42,19 +42,19 @@ public interface Region {
     /**
      * //  NOT YET IMPLEMENTED
      **/
-    Set<Location> getValidLocations(Location center, int range);
+    // -> Set<Location> getValidLocations(Location center, int range);
 
     //a getter for all the locations where the entity can walk to
-    Set<Location> getReachableLocations();
+    // -> Set<Location> getReachableLocations();
 
     //a getter for all the locations where the entity can stand near a point
 
     /**
      * //  NOT YET IMPLEMENTED
      **/
-    Set<Location> getReachableLocations(Location center, int range);
+    // -> Set<Location> getReachableLocations(Location center, int range);
 
-    Set<Location> getReachableLocations(Location center, int x_range, int y_range, int z_range);
+    // -> Set<Location> getReachableLocations(Location center, int x_range, int y_range, int z_range);
 
 
     //a check for intersection locations

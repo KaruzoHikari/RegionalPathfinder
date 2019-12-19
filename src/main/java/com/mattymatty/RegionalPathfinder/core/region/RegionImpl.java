@@ -38,6 +38,8 @@ public interface RegionImpl extends Region {
     Map<Region, Cache<Region, Set<Location>>> intersectionCacheMap = new HashMap<>();
 
     default Set<Location> _getIntersection(Region region) {
+        // TODO REPLACE THE WHOLE INTERSECTION SYSTEM?
+
         Cache<Region, Set<Location>> cache = intersectionCacheMap.computeIfAbsent(this, (k) -> CacheBuilder.newBuilder().softValues()
                 .maximumSize(15).build());
         Set<Location> intersection = cache.getIfPresent(region);
@@ -64,15 +66,17 @@ public interface RegionImpl extends Region {
         int medium_range_2 = (x_range_2 + y_range_2 + z_range_2) / 3;
 
         if (medium_range_1 > medium_range_2) {
-            Set<Location> common = new HashSet<>(region.getReachableLocations(center_2, x_range_2, y_range_2, z_range_2));
+            // TODO CHECK INTERSECTIONS
+            /*Set<Location> common = new HashSet<>(region.getReachableLocations(center_2, x_range_2, y_range_2, z_range_2));
             common.retainAll(this.getReachableLocations());
-            cache.put(region, common);
-            return common;
+            cache.put(region, common);*/
+            return null;
         } else {
-            Set<Location> common = new HashSet<>(region.getReachableLocations());
+            // TODO CHECK INTERSECTIONS
+            /*Set<Location> common = new HashSet<>(region.getReachableLocations());
             common.retainAll(this.getReachableLocations(center_1, x_range_1, y_range_1, z_range_1));
-            cache.put(region, common);
-            return common;
+            cache.put(region, common);*/
+            return null;
         }
 
     }

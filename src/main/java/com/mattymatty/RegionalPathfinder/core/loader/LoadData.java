@@ -1,5 +1,6 @@
 package com.mattymatty.RegionalPathfinder.core.loader;
 
+import com.mattymatty.RegionalPathfinder.LocationPair;
 import com.mattymatty.RegionalPathfinder.core.graph.Edge;
 import com.mattymatty.RegionalPathfinder.core.graph.Node;
 import com.mattymatty.RegionalPathfinder.core.region.BaseRegionImpl;
@@ -8,7 +9,9 @@ import org.jgrapht.Graph;
 import org.jgrapht.alg.interfaces.ShortestPathAlgorithm;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class LoadData {
@@ -27,6 +30,8 @@ public class LoadData {
     int y_size;
     int z_size;
     public final Map<Integer, Map<Integer, Map<Integer, Location>>> reachableLocationsMap = new HashMap<>();
+
+    public List<LocationPair> reachableLocations = new ArrayList<>();
 
     public LoadData(BaseRegionImpl region, Location upperCorner, Location lowerCorner) {
         this.region = new WeakReference<>(region);

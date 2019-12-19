@@ -2,6 +2,7 @@ package com.mattymatty.RegionalPathfinder.core.region;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.mattymatty.RegionalPathfinder.LocationPair;
 import com.mattymatty.RegionalPathfinder.Logger;
 import com.mattymatty.RegionalPathfinder.RegionalPathfinder;
 import com.mattymatty.RegionalPathfinder.api.Status;
@@ -141,6 +142,11 @@ public class MergedRegionImpl implements ExtendedRegion, RegionImpl {
     }
 
     @Override
+    public Set<Location> getReachableLocations(Location center, int x_range, int y_range, int z_range) {
+        return null;
+    }
+
+    @Override
     public boolean isInRegion(Location location) {
         return false;
     }
@@ -177,6 +183,16 @@ public class MergedRegionImpl implements ExtendedRegion, RegionImpl {
 
     @Override
     public Status<Path> getPath(Location start, Location end) {
+        return null;
+    }
+
+    @Override
+    public Set<Location> getAllLocationsCANTSTORE() {
+        return null;
+    }
+
+    @Override
+    public List<LocationPair> getLocationPairs() {
         return null;
     }
 

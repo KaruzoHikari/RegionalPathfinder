@@ -160,8 +160,7 @@ public class Commands implements CommandExecutor {
                                 }
                                 case "reachableloc":
                                 case "reachablelocations": {
-                                    // TODO THIS LISTS THE REACHABLE LOCATIONS -> UNNULL IT AND GET ALL
-                                    Set<Location> locations = null;
+                                    Set<Location> locations = region.getAllLocationsCANTSTORE();
                                     if (locations.isEmpty()) {
                                         sender.sendMessage("Error no reachable locations");
                                     } else {
@@ -233,8 +232,7 @@ public class Commands implements CommandExecutor {
                                 }
                                 case "reachableloc":
                                 case "reachablelocations": {
-                                    // TODO THIS LISTS THE REACHABLE LOCATIONS -> UNNULL IT AND GET ALL
-                                    Set<Location> locations = null;
+                                    Set<Location> locations = region.getAllLocationsCANTSTORE();
                                     if (locations.isEmpty()) {
                                         sender.sendMessage("Error no reachable locations");
                                     } else {

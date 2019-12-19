@@ -53,7 +53,7 @@ public class LocationPair {
         Location minCorner = getCornerOfPair(loc,false,ogLocationList,locList,maxCorner);
         LocationPair locationPair = new LocationPair(minCorner,maxCorner);
         for(Location location : new ArrayList<>(locList)) {
-            if(location.getBlockY() == minCorner.getBlockY()) {
+            if(location.getBlockY() >= minCorner.getBlockY() && location.getBlockY() <= maxCorner.getBlockY()) {
                 if(location.getBlockX() >= minCorner.getBlockX() && location.getBlockX() <= maxCorner.getBlockX()) {
                     if(location.getBlockZ() >= minCorner.getBlockZ() && location.getBlockZ() <= maxCorner.getBlockZ()) {
                         locList.remove(location);

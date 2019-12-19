@@ -2,6 +2,7 @@ package com.mattymatty.RegionalPathfinder.core.region;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.mattymatty.RegionalPathfinder.LocationPair;
 import com.mattymatty.RegionalPathfinder.Logger;
 import com.mattymatty.RegionalPathfinder.RegionalPathfinder;
 import com.mattymatty.RegionalPathfinder.api.Status;
@@ -157,14 +158,14 @@ public class BaseRegionImpl implements RegionImpl, BaseRegion {
         if (readers.decrementAndGet() == 0)
             lock.unlock();
         return result;
-    }
+    }*/
 
     @Override
     public Set<Location> getReachableLocations(Location center, int x_range, int y_range, int z_range) {
 
         if (!lock.tryLock()) {
             if (readers.getAndUpdate(operand -> ((operand == 0) ? operand : operand++)) == 0) {
-                throw new AsyncExecption("Async operation still running on this region", this);
+                throw new AsyncException("Async operation still running on this region", this);
             }
         } else
             readers.incrementAndGet();
@@ -194,7 +195,7 @@ public class BaseRegionImpl implements RegionImpl, BaseRegion {
         if (readers.decrementAndGet() == 0)
             lock.unlock();
         return result;
-    }*/
+    }
 
     private Location upperCorner;
     private Location samplepoint;
@@ -499,6 +500,20 @@ public class BaseRegionImpl implements RegionImpl, BaseRegion {
             RegionalPathfinder.getInstance().runningThreads.remove(Thread.currentThread());
         });
         return status;
+    }
+
+    @Override
+    public Set<Location> getAllLocationsCANTSTORE() {
+        Set<Location> locationList = new HashSet<>();
+        for(LocationPair locationPair : loadData.reachableLocations) {
+            locationList.addAll(locationPair.getAllLocations());
+        }
+        return locationList;
+    }
+
+    @Override
+    public List<LocationPair> getLocationPairs() {
+        return loadData.reachableLocations;
     }
 
     @Override

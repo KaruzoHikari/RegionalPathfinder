@@ -1,5 +1,6 @@
 package com.mattymatty.RegionalPathfinder.api.region;
 
+import com.mattymatty.RegionalPathfinder.LocationPair;
 import com.mattymatty.RegionalPathfinder.RegionalPathfinder;
 import com.mattymatty.RegionalPathfinder.api.Status;
 import com.mattymatty.RegionalPathfinder.api.entity.Entity;
@@ -54,7 +55,7 @@ public interface Region {
      **/
     // -> Set<Location> getReachableLocations(Location center, int range);
 
-    // -> Set<Location> getReachableLocations(Location center, int x_range, int y_range, int z_range);
+    Set<Location> getReachableLocations(Location center, int x_range, int y_range, int z_range);
 
 
     //a check for intersection locations
@@ -127,4 +128,6 @@ public interface Region {
         }
     }
 
+    Set<Location> getAllLocationsCANTSTORE();
+    List<LocationPair> getLocationPairs();
 }

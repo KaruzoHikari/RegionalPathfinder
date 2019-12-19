@@ -1,5 +1,6 @@
 package com.mattymatty.RegionalPathfinder.api.region;
 
+import com.mattymatty.RegionalPathfinder.LocationPair;
 import com.mattymatty.RegionalPathfinder.RegionalPathfinder;
 import com.mattymatty.RegionalPathfinder.api.Status;
 import com.mattymatty.RegionalPathfinder.api.entity.Entity;
@@ -42,20 +43,22 @@ public interface Region {
     /**
      * //  NOT YET IMPLEMENTED
      **/
-    Set<Location> getValidLocations(Location center, int range);
+    // -> Set<Location> getValidLocations(Location center, int range);
 
     //a getter for all the locations where the entity can walk to
-    Set<Location> getReachableLocations();
+    // -> Set<Location> getReachableLocations();
 
     //a getter for all the locations where the entity can stand near a point
 
     /**
      * //  NOT YET IMPLEMENTED
      **/
-    Set<Location> getReachableLocations(Location center, int range);
+    // -> Set<Location> getReachableLocations(Location center, int range);
 
     Set<Location> getReachableLocations(Location center, int x_range, int y_range, int z_range);
 
+    Set<Location> getAllLocationsCANTSTORE();
+    List<LocationPair> getLocationPairs();
 
     //a check for intersection locations
     default Status<Set<Location>> getIntersection(Region region) {

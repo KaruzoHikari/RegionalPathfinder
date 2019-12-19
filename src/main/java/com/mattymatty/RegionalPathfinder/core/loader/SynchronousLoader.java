@@ -1,11 +1,12 @@
 package com.mattymatty.RegionalPathfinder.core.loader;
 
+import com.mattymatty.RegionalPathfinder.LocationPair;
 import com.mattymatty.RegionalPathfinder.Logger;
 import com.mattymatty.RegionalPathfinder.core.StatusImpl;
 import com.mattymatty.RegionalPathfinder.core.graph.Edge;
 import com.mattymatty.RegionalPathfinder.core.graph.Node;
-import com.mattymatty.RegionalPathfinder.exeptions.LoaderException;
-import com.mattymatty.RegionalPathfinder.exeptions.RegionException;
+import com.mattymatty.RegionalPathfinder.exceptions.LoaderException;
+import com.mattymatty.RegionalPathfinder.exceptions.RegionException;
 import org.bukkit.Location;
 import org.bukkit.util.Vector;
 import org.jgrapht.Graph;
@@ -155,12 +156,22 @@ public class SynchronousLoader implements Loader {
             data.reachableGraph = scs;
             data.shortestPath = new DijkstraShortestPath<>(data.getReachableGraph());
 
+            Set<Location> ogLocationList = new HashSet<>();
+
             data.reachableLocationsMap.clear();
             scs.vertexSet().stream().map(Node::getLoc).forEach(l -> {
+                ogLocationList.add(l);
                 Map<Integer, Map<Integer, Location>> z_map = data.reachableLocationsMap.computeIfAbsent(l.getBlockY(), k -> new HashMap<>());
                 Map<Integer, Location> x_set = z_map.computeIfAbsent(l.getBlockZ(), k -> new HashMap<>());
                 x_set.put(l.getBlockX(), l);
             });
+
+            List<Location> locList = new ArrayList<>(ogLocationList);
+            while(locList.size() > 0) {
+                Location l = locList.get(0);
+                data.reachableLocations.add(LocationPair.getLocationPair(l,locList,ogLocationList));
+            }
+
 
             status.totTime = (toc - tic);
             status.setProduct(data.samplePoint);
@@ -231,11 +242,11 @@ public class SynchronousLoader implements Loader {
         }
 
         data.nodesMap.clear();
-        data.graph = GraphTypeBuilder.<Node, Edge>directed().edgeClass(Edge.class).weighted(true).buildGraph();
+        data.graph = GraphTypeBuilder.<Node, Edge>directed().edgeClass(Edge.class).weighted(true).allowingSelfLoops(true).buildGraph();
     }
 
     private void preEvaluate(LoadData data) {
-        Graph<Node, Edge> newGraph = GraphTypeBuilder.<Node, Edge>directed().edgeClass(Edge.class).weighted(true).buildGraph();
+        Graph<Node, Edge> newGraph = GraphTypeBuilder.<Node, Edge>directed().edgeClass(Edge.class).allowingSelfLoops(true).weighted(true).buildGraph();
         data.graph.vertexSet().forEach(newGraph::addVertex);
         data.graph = newGraph;
         data.reachableGraph = null;

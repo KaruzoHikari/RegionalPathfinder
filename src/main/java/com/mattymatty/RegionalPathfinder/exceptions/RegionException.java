@@ -1,4 +1,4 @@
-package com.mattymatty.RegionalPathfinder.exeptions;
+package com.mattymatty.RegionalPathfinder.exceptions;
 
 import com.mattymatty.RegionalPathfinder.api.region.Region;
 

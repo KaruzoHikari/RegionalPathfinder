@@ -1,5 +1,6 @@
 package com.mattymatty.RegionalPathfinder.core.region;
 
+import com.mattymatty.RegionalPathfinder.LocationPair;
 import com.mattymatty.RegionalPathfinder.Logger;
 import com.mattymatty.RegionalPathfinder.RegionalPathfinder;
 import com.mattymatty.RegionalPathfinder.api.Status;
@@ -9,7 +10,7 @@ import com.mattymatty.RegionalPathfinder.api.region.Region;
 import com.mattymatty.RegionalPathfinder.core.StatusImpl;
 import com.mattymatty.RegionalPathfinder.core.graph.Edge;
 import com.mattymatty.RegionalPathfinder.core.graph.Node;
-import com.mattymatty.RegionalPathfinder.exeptions.RegionException;
+import com.mattymatty.RegionalPathfinder.exceptions.RegionException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -71,7 +72,7 @@ public class ExtendedRegionImpl implements ExtendedRegion, RegionImpl {
         return addRegion(region, 1.0);
     }
 
-    private Set<Location> reachableLocations = new HashSet<>();
+    private List<LocationPair> reachableLocations = new ArrayList<>();
 
     @Override
     public Status<Region[]> addRegion(Region region, @Positive double weightMultiplier) {
@@ -198,9 +199,9 @@ public class ExtendedRegionImpl implements ExtendedRegion, RegionImpl {
         regions.put(reg, rw);
         reg.referencer(this);
 
-        reg.getReachableLocations().forEach(this::computeLocations);
+        reg.getAllLocationsCANTSTORE().forEach(this::computeLocations);
 
-        reachableLocations.addAll(reg.getReachableLocations());
+        reachableLocations.addAll(reg.getLocationPairs());
         status.setProduct(regions.keySet().toArray(new Region[]{}));
         status.totTime = (System.currentTimeMillis() - tic);
         status.setStatus(3);
@@ -403,10 +404,10 @@ public class ExtendedRegionImpl implements ExtendedRegion, RegionImpl {
         return regions.keySet().stream().flatMap(r -> r.getValidLocations().stream()).distinct().collect(Collectors.toSet());
     }
 
-    @Override
+    /*@Override
     public Set<Location> getValidLocations(Location center, int range) {
         throw new RuntimeException("Not Yet implemented");
-    }
+    }*/
 
     private Region getRegion(Location l) {
         return regions.keySet().stream().filter((r) -> r.isReachableLocation(l)).findFirst().orElse(null);
@@ -441,31 +442,36 @@ public class ExtendedRegionImpl implements ExtendedRegion, RegionImpl {
         status.setProduct(regions.keySet().toArray(new Region[]{}));
         status.totTime = (System.currentTimeMillis() - tic);
         reachableLocations.clear();
-        getReachableLocations();
         reachableLocationsMap.clear();
+        for(LocationPair locationPair : new ArrayList<>(reachableLocations)) {
+            if(reg.getLocationPairs().contains(locationPair)) {
+                reachableLocations.remove(locationPair);
+            }
+        }
         min_x = Long.MAX_VALUE;
         min_y = Long.MAX_VALUE;
         min_z = Long.MAX_VALUE;
         max_x = Long.MIN_VALUE;
         max_y = Long.MIN_VALUE;
         max_z = Long.MIN_VALUE;
-        reachableLocations.forEach(this::computeLocations);
+        getAllLocationsCANTSTORE().forEach(this::computeLocations);
         status.setStatus(3);
     }
 
+    /*
     @Override
     public Set<Location> getReachableLocations() {
         if (reachableLocations.isEmpty())
             reachableLocations = regions.keySet().stream().flatMap(r -> r.getReachableLocations().stream()).collect(Collectors.toSet());
         return new HashSet<>(reachableLocations);
-    }
+    }*/
 
     @Override
     public int getLevel() {
         return regions.keySet().stream().mapToInt(Region::getLevel).max().orElse(-1) + 1;
     }
 
-    @Override
+    /*@Override
     public Set<Location> getReachableLocations(Location center, int range) {
         if (reachableLocationsMap.isEmpty())
             return null;
@@ -487,7 +493,7 @@ public class ExtendedRegionImpl implements ExtendedRegion, RegionImpl {
             );
         }
         return result;
-    }
+    }*/
 
     @Override
     public Set<Location> getReachableLocations(Location center, int x_range, int y_range, int z_range) {
@@ -511,6 +517,20 @@ public class ExtendedRegionImpl implements ExtendedRegion, RegionImpl {
             );
         }
         return result;
+    }
+
+    @Override
+    public Set<Location> getAllLocationsCANTSTORE() {
+        Set<Location> locationList = new HashSet<>();
+        for(LocationPair locationPair : reachableLocations) {
+            locationList.addAll(locationPair.getAllLocations());
+        }
+        return locationList;
+    }
+
+    @Override
+    public List<LocationPair> getLocationPairs() {
+        return reachableLocations;
     }
 
     @Override

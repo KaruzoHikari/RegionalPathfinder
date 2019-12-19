@@ -8,7 +8,7 @@ import com.mattymatty.RegionalPathfinder.core.loader.Loader;
 import com.mattymatty.RegionalPathfinder.core.region.BaseRegionImpl;
 import com.mattymatty.RegionalPathfinder.core.region.ExtendedRegionImpl;
 import com.mattymatty.RegionalPathfinder.core.region.RegionImpl;
-import com.mattymatty.RegionalPathfinder.exeptions.InvalidNameException;
+import com.mattymatty.RegionalPathfinder.exceptions.InvalidNameException;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.json.JSONObject;

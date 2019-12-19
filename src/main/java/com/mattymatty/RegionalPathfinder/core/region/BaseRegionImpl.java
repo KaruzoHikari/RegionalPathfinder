@@ -2,6 +2,7 @@ package com.mattymatty.RegionalPathfinder.core.region;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.mattymatty.RegionalPathfinder.LocationPair;
 import com.mattymatty.RegionalPathfinder.Logger;
 import com.mattymatty.RegionalPathfinder.RegionalPathfinder;
 import com.mattymatty.RegionalPathfinder.api.Status;
@@ -14,8 +15,8 @@ import com.mattymatty.RegionalPathfinder.core.graph.Node;
 import com.mattymatty.RegionalPathfinder.core.loader.LoadData;
 import com.mattymatty.RegionalPathfinder.core.loader.Loader;
 import com.mattymatty.RegionalPathfinder.core.loader.SynchronousLoader;
-import com.mattymatty.RegionalPathfinder.exeptions.AsyncExecption;
-import com.mattymatty.RegionalPathfinder.exeptions.RegionException;
+import com.mattymatty.RegionalPathfinder.exceptions.AsyncExecption;
+import com.mattymatty.RegionalPathfinder.exceptions.RegionException;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -102,14 +103,13 @@ public class BaseRegionImpl implements RegionImpl, BaseRegion {
         return ret;
     }
 
-    @Override
+    /*@Override
     public Set<Location> getValidLocations(Location center, int range) {
         throw new RuntimeException("Not Yet implemented");
-    }
+    }*/
 
-    @Override
+    /*@Override
     public Set<Location> getReachableLocations() {
-
         if (!lock.tryLock()) {
             if (readers.getAndUpdate(operand -> ((operand == 0) ? operand : operand++)) == 0) {
                 throw new AsyncExecption("Async operation still running on this region", this);
@@ -158,6 +158,20 @@ public class BaseRegionImpl implements RegionImpl, BaseRegion {
         if (readers.decrementAndGet() == 0)
             lock.unlock();
         return result;
+    }*/
+
+    @Override
+    public Set<Location> getAllLocationsCANTSTORE() {
+        Set<Location> locationList = new HashSet<>();
+        for(LocationPair locationPair : loadData.reachableLocations) {
+            locationList.addAll(locationPair.getAllLocations());
+        }
+        return locationList;
+    }
+
+    @Override
+    public List<LocationPair> getLocationPairs() {
+        return loadData.reachableLocations;
     }
 
     @Override

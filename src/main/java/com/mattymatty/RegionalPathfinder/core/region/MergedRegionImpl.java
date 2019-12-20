@@ -137,11 +137,6 @@ public class MergedRegionImpl implements ExtendedRegion, RegionImpl {
     }
 
     @Override
-    public Set<Location> getValidLocations() {
-        return null;
-    }
-
-    @Override
     public Set<Location> getReachableLocations(Location center, int x_range, int y_range, int z_range) {
         return null;
     }

@@ -36,7 +36,7 @@ public interface Region {
     Location getMaxCorner();
 
     //a getter for all the locations where the entity can stand
-    Set<Location> getValidLocations();
+    //Set<Location> getValidLocations();
 
     //a getter for all the locations where the entity can stand near a point
 

@@ -18,7 +18,7 @@ public interface Loader {
 
     void validate(LoadData data, StatusImpl<Boolean> status);
 
-    default List<Location> getValid(LoadData data) {
+    /*default List<Location> getValid(LoadData data) {
 
         if (data.graph == null)
             return null;
@@ -26,7 +26,7 @@ public interface Loader {
         List<Location> result = data.graph.vertexSet().parallelStream().map(Node::getLoc).collect(Collectors.toCollection(LinkedList::new));
 
         return (result.isEmpty()) ? null : result;
-    }
+    }*/
 
     default List<Location> getReachable(LoadData data) {
         if (data.reachableGraph == null)

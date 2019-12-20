@@ -83,9 +83,10 @@ public class SynchronousLoader implements Loader {
             if (data.samplePoint.getWorld() != data.upperCorner.getWorld()) {
                 throw new RegionException("samplepoint is not in the world", data.getRegion());
             }
-            if (!data.getRegion().getValidLocations().contains(data.samplePoint)) {
+            // From the Routines it will always be in the region
+            /*if (!data.getRegion().getValidLocations().contains(data.samplePoint)) {
                 throw new RegionException("samplepoint is not in the region", data.getRegion());
-            }
+            }*/
             data.status = LoadData.Status.EVALUATING;
             Logger.info("Started evaluating region: " + data.getRegion().getName());
             preEvaluate(data);
@@ -140,7 +141,6 @@ public class SynchronousLoader implements Loader {
 
             Graph<Node, Edge> scs = stronglyConnectedSubgraphs.stream().filter(g -> g.containsVertex(samplePoint)).findFirst().orElse(null);
 
-
             toc = System.currentTimeMillis();
             status.percentage = 1f;
             if (scs == null) {
@@ -153,7 +153,17 @@ public class SynchronousLoader implements Loader {
                 return;
             }
 
-            data.reachableGraph = scs;
+            List<Edge> edgeList = new ArrayList<>(scs.edgeSet());
+            List<Node> nodeList = new ArrayList<>(scs.vertexSet());
+            data.graph = null;
+            data.reachableGraph = GraphTypeBuilder.<Node, Edge>directed().edgeClass(Edge.class).weighted(true).allowingSelfLoops(true).buildGraph();
+            for(Node node : nodeList) {
+                data.reachableGraph.addVertex(node);
+            }
+            for(Edge edge : edgeList) {
+                data.reachableGraph.addEdge(edge.getSource(),edge.getDest(),edge);
+            }
+
             data.shortestPath = new DijkstraShortestPath<>(data.getReachableGraph());
 
             Set<Location> ogLocationList = new HashSet<>();

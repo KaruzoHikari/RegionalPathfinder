@@ -147,7 +147,7 @@ public class Commands implements CommandExecutor {
                                     });
                                     return true;
                                 }
-                                case "validloc":
+                                /*case "validloc":
                                 case "validlocations": {
                                     Set<Location> locations = region.getValidLocations();
                                     if (locations.isEmpty()) {
@@ -157,7 +157,7 @@ public class Commands implements CommandExecutor {
                                         sender.sendMessage("Shown particles onto valid Locations, remove with /regionalpathfinder particle");
                                     }
                                     return true;
-                                }
+                                }*/
                                 case "reachableloc":
                                 case "reachablelocations": {
                                     Set<Location> locations = region.getAllLocationsCANTSTORE();
@@ -219,7 +219,7 @@ public class Commands implements CommandExecutor {
                                     );
                                     return true;
                                 }
-                                case "validloc":
+                                /*case "validloc":
                                 case "validlocations": {
                                     Set<Location> locations = region.getValidLocations();
                                     if (locations.isEmpty()) {
@@ -229,7 +229,7 @@ public class Commands implements CommandExecutor {
                                         sender.sendMessage("Shown particles onto valid Locations, remove with /regionalpathfinder particle");
                                     }
                                     return true;
-                                }
+                                }*/
                                 case "reachableloc":
                                 case "reachablelocations": {
                                     Set<Location> locations = region.getAllLocationsCANTSTORE();

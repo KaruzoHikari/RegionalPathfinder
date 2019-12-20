@@ -87,7 +87,7 @@ public class BaseRegionImpl implements RegionImpl, BaseRegion {
 
     private Location lowerCorner;
 
-    @Override
+    /*@Override
     public Set<Location> getValidLocations() {
 
         if (!lock.tryLock()) {
@@ -101,7 +101,7 @@ public class BaseRegionImpl implements RegionImpl, BaseRegion {
         if (readers.decrementAndGet() == 0)
             lock.unlock();
         return ret;
-    }
+    }*/
 
     /*@Override
     public Set<Location> getValidLocations(Location center, int range) {

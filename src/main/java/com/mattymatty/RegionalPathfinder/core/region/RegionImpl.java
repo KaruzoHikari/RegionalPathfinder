@@ -2,9 +2,11 @@ package com.mattymatty.RegionalPathfinder.core.region;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.mattymatty.RegionalPathfinder.LocationPair;
 import com.mattymatty.RegionalPathfinder.api.region.Region;
 import com.mattymatty.RegionalPathfinder.api.region.RegionType;
 import org.bukkit.Location;
+import org.bukkit.util.Vector;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -125,6 +127,7 @@ public interface RegionImpl extends Region {
         }
         return common;
     }
+
     default Location getCornerOfPair(Location loc, boolean positive, LocationPair checkPair) {
         Location corner = null;
         Location currentLoc = loc.clone();

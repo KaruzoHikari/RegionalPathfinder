@@ -399,10 +399,10 @@ public class ExtendedRegionImpl implements ExtendedRegion, RegionImpl {
         return (max_x == Long.MIN_VALUE) ? null : new Location(getWorld(), max_x, max_y, max_z);
     }
 
-    @Override
+    /*@Override
     public Set<Location> getValidLocations() {
         return regions.keySet().stream().flatMap(r -> r.getValidLocations().stream()).distinct().collect(Collectors.toSet());
-    }
+    }*/
 
     /*@Override
     public Set<Location> getValidLocations(Location center, int range) {
